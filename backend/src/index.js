@@ -1,57 +1,30 @@
-import cors from 'cors'
+import 'dotenv/config';
+import cors from 'cors';
+import uuidv4 from 'uuid/v4';
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 
+import schema from './schema';
+import resolvers from './resolvers';
+import models, { sequelize } from './models';
+
 const app = express();
+
 app.use(cors());
 
-const schema = `
-    type Query{
-        me: User
-        user(id: ID!): User
-        users: [User!]
-    }
-
-    type User {
-        id: ID!
-        username: String!
-    }
-`
-
-let users = {
-    1: {
-      id: '1',
-      username: 'Rahat Chowdhury',
-    },
-    2: {
-      id: '2',
-      username: 'Hasiba Khan',
-    },
-  };
-
-const me = users[1];
-
-const resolvers = {
-    Query: {
-      user: (parent, { id }) => {
-        return users[id];
-      },
-      users: () => {
-        return Object.values(users);
-      },
-      me: () => {
-        return me;
-      },
-    },
-  };
-
 const server = new ApolloServer({
-    typeDefs: schema,
-    resolvers,
+  typeDefs: schema,
+  resolvers,
+  context: {
+    models,
+    me: models.users[1],
+  },
 });
 
-server.applyMiddleware({ app, path: '/graphql'});
+server.applyMiddleware({ app, path: '/graphql' });
 
-app.listen({ port: 8000 }, () => {
-    console.log('Apollo Server on http://localhost:8000/graphql')
-})
+sequelize.sync().then(async () => {
+  app.listen({ port: 8000 }, () => {
+    console.log('Apollo Server on http://localhost:8000/graphql');
+  });
+});
