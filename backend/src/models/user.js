@@ -1,14 +1,15 @@
 const user = (sequelize, DataTypes) => {
-    const User = sequelize.define('user', {
-        username: {
-            type: DataTypes.STRING,
-        },
-    });
-    User.associate = models => {
-        User.hasMany(models.Message, { onDelete: 'CASCADE'});
-    };
+  const User = sequelize.define('user', {
+    username: {
+      type: DataTypes.STRING,
+    },
+  });
 
-    User.findByLogin = async login => {
+  User.associate = models => {
+    User.hasMany(models.Message, { onDelete: 'CASCADE' });
+  };
+
+  User.findByLogin = async login => {
     let user = await User.findOne({
       where: { username: login },
     });
@@ -20,9 +21,9 @@ const user = (sequelize, DataTypes) => {
     }
 
     return user;
-};
+  };
 
-    return User;
+  return User;
 };
 
 export default user;

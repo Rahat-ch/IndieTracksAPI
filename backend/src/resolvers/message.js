@@ -4,7 +4,7 @@ export default {
       return await models.Message.findAll();
     },
     message: async (parent, { id }, { models }) => {
-      return await models.Message.findById(id);
+      return await models.Message.findByPk(id);
     },
   },
 
@@ -17,13 +17,13 @@ export default {
     },
 
     deleteMessage: async (parent, { id }, { models }) => {
-      return await models.Message.destroy({ where: { id }});
+      return await models.Message.destroy({ where: { id } });
     },
   },
 
   Message: {
     user: async (message, args, { models }) => {
-      return await models.User.findById(message.userID);
+      return await models.User.findByPk(message.userId);
     },
   },
 };

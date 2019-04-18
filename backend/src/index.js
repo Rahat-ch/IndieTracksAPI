@@ -41,7 +41,7 @@ const createUsersWithMessages = async () => {
       username: 'rchowdhury',
       messages: [
         {
-          text: 'Ay you wuz gooood bruh',
+          text: 'Ay yo wuz goooood',
         },
       ],
     },
@@ -52,13 +52,13 @@ const createUsersWithMessages = async () => {
 
   await models.User.create(
     {
-      username: 'hkahn',
+      username: 'hkhan',
       messages: [
         {
-          text: 'I like pizza',
+          text: 'I love pizza',
         },
         {
-          text: 'Stop eating chocolate!',
+          text: 'Stop eating chocolate',
         },
       ],
     },
