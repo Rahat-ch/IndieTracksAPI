@@ -62,7 +62,7 @@ const eraseDatabaseOnSync = true;
 
 sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
   if (eraseDatabaseOnSync) {
-    createUsersWithMessages();
+    await createUsersWithMessages();
   }
 
   app.listen({ port: 8000 }, () => {
@@ -75,7 +75,7 @@ const createUsersWithMessages = async () => {
     {
       username: 'rchowdhury',
       email: 'hello@rahat.com',
-      password: 'rahat',
+      password: 'rchowdhury',
       role: 'ADMIN',
       messages: [
         {
@@ -92,7 +92,7 @@ const createUsersWithMessages = async () => {
     {
       username: 'hkhan',
       email: 'hello@khan.com',
-      password: 'khan',
+      password: 'hkhan123',
       messages: [
         {
           text: 'I love pizza!',
