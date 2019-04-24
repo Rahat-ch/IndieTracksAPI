@@ -62,7 +62,7 @@ const eraseDatabaseOnSync = true;
 
 sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
   if (eraseDatabaseOnSync) {
-    await createUsersWithMessages();
+    await createUsersWithMessages(new Date());
   }
 
   app.listen({ port: 8000 }, () => {
@@ -70,7 +70,7 @@ sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
   });
 });
 
-const createUsersWithMessages = async () => {
+const createUsersWithMessages = async date => { 
   await models.User.create(
     {
       username: 'rchowdhury',
@@ -80,6 +80,7 @@ const createUsersWithMessages = async () => {
       messages: [
         {
           text: 'I\'m Hackerman',
+          createdAt: date.setSeconds(date.getSeconds() + 1),
         },
       ],
     },
@@ -87,7 +88,7 @@ const createUsersWithMessages = async () => {
       include: [models.Message],
     },
   );
-
+    
   await models.User.create(
     {
       username: 'hkhan',
@@ -96,9 +97,11 @@ const createUsersWithMessages = async () => {
       messages: [
         {
           text: 'I love pizza!',
+          createdAt: date.setSeconds(date.getSeconds() + 1),
         },
         {
           text: 'Stop eating chocolate!',
+          createdAt: date.setSeconds(date.getSeconds() + 1),
         },
       ],
     },
