@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import cors from 'cors';
-import uuidv4 from 'uuid/v4';
+import http from 'http';
 import jwt from 'jsonwebtoken';
 import express from 'express';
 import {
@@ -31,6 +31,8 @@ const getMe = async req => {
 };
 
 const server = new ApolloServer({
+  introspection: true,
+  playground: true,
   typeDefs: schema,
   resolvers,
   formatError: error => {
@@ -58,15 +60,25 @@ const server = new ApolloServer({
 
 server.applyMiddleware({ app, path: '/graphql' });
 
-const eraseDatabaseOnSync = true;
 
-sequelize.sync({ force: eraseDatabaseOnSync }).then(async () => {
-  if (eraseDatabaseOnSync) {
-    await createUsersWithMessages(new Date());
+const httpServer = http.createServer(app);
+server.installSubscriptionHandlers(httpServer);
+
+const eraseDatabaseOnSync = true;
+const isProduction = !!process.env.DATABASE_URL;
+const port = process.env.PORT || 8000;
+
+sequelize.sync({
+  force: eraseDatabaseOnSync || isProduction
+}).then(async () => {
+  if (eraseDatabaseOnSync || isProduction) {
+    createUsersWithMessages(new Date());
   }
 
-  app.listen({ port: 8000 }, () => {
-    console.log('Apollo Server on http://localhost:8000/graphql');
+  httpServer.listen({
+    port
+  }, () => {
+    console.log(`Apollo Server on http://localhost:${port}/graphql`);
   });
 });
 
