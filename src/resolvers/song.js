@@ -1,14 +1,14 @@
 import Sequelize from 'sequelize';
 import { combineResolvers } from 'graphql-resolvers';
 
-import { isAuthenticated, isMessageOwner } from './authorization';
+import { isAuthenticated, isSongOwner } from './authorization';
 
 const toCursorHash = string =>
   Buffer.from(string, 'base64').toString('ascii');
 
 export default {
   Query: {
-    messages: async (parent, {
+    songs: async (parent, {
       cursor,
       limit = 100
     }, {
@@ -24,14 +24,14 @@ export default {
       }
       : {};
       
-      const messages = await models.Message.findAll({
+      const songs = await models.Song.findAll({
         order: [['createdAt', 'DESC']],
         limit: limit + 1,
         ...cursorOptions,
       });
 
-      const hasNextPage = messages.length > limit;
-      const edges = hasNextPage ? messages.slice(0, -1) : messages;
+      const hasNextPage = songs.length > limit;
+      const edges = hasNextPage ? songs.slice(0, -1) : songs;
 
       return {
         edges,
@@ -43,38 +43,38 @@ export default {
         },
       };
     },
-    message: async (parent, {
+    song: async (parent, {
       id
     }, {
       models
     }) => {
-      return await models.Message.findById(id);
+      return await models.Song.findById(id);
     },
   },
 
   Mutation: {
-    createMessage: combineResolvers(
+    createSong: combineResolvers(
       isAuthenticated,
-      async (parent, { text }, { models, me }) => {
-        return await models.Message.create({
-          text,
+      async (parent, { url }, { models, me }) => {
+        return await models.Song.create({
+          url,
           userId: me.id,
         });
       },
     ),
 
-    deleteMessage: combineResolvers(
+    deleteSong: combineResolvers(
       isAuthenticated,
-      isMessageOwner,
+      isSongOwner,
       async (parent, { id }, { models }) => {
-        return await models.Message.destroy({ where: { id } });
+        return await models.Song.destroy({ where: { id } });
       },
     ),
   },
 
-  Message: {
-    user: async (message, args, { models }) => {
-      return await models.User.findByPk(message.userId);
+  Song: {
+    user: async (song, args, { models }) => {
+      return await models.User.findByPk(song.userId);
     },
   },
 };

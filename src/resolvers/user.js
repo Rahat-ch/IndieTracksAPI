@@ -76,8 +76,8 @@ export default {
   },
 
   User: {
-    messages: async (user, args, { models }) => {
-      return await models.Message.findAll({
+    songs: async (user, args, { models }) => {
+      return await models.Song.findAll({
         where: {
           userId: user.id,
         },

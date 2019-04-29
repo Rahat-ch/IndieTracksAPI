@@ -72,7 +72,7 @@ sequelize.sync({
   force: eraseDatabaseOnSync || isProduction
 }).then(async () => {
   if (eraseDatabaseOnSync || isProduction) {
-    createUsersWithMessages(new Date());
+    createUsersWithSongs(new Date());
   }
 
   httpServer.listen({
@@ -82,22 +82,22 @@ sequelize.sync({
   });
 });
 
-const createUsersWithMessages = async date => { 
+const createUsersWithSongs = async date => { 
   await models.User.create(
     {
       username: 'rchowdhury',
       email: 'hello@rahat.com',
       password: 'rchowdhury',
       role: 'ADMIN',
-      messages: [
+      songs: [
         {
-          text: 'I\'m Hackerman',
+          url: 'I\'m Hackerman',
           createdAt: date.setSeconds(date.getSeconds() + 1),
         },
       ],
     },
     {
-      include: [models.Message],
+      include: [models.Song],
     },
   );
     
@@ -106,19 +106,19 @@ const createUsersWithMessages = async date => {
       username: 'hkhan',
       email: 'hello@khan.com',
       password: 'hkhan123',
-      messages: [
+      songs: [
         {
-          text: 'I love pizza!',
+          url: 'I love pizza!',
           createdAt: date.setSeconds(date.getSeconds() + 1),
         },
         {
-          text: 'Stop eating chocolate!',
+          url: 'Stop eating chocolate!',
           createdAt: date.setSeconds(date.getSeconds() + 1),
         },
       ],
     },
     {
-      include: [models.Message],
+      include: [models.Song],
     },
   );
 };

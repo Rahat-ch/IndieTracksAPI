@@ -2,24 +2,24 @@ import { gql } from 'apollo-server-express';
 
 export default gql`
   extend type Query {
-    messages(cursor: String, limit: Int): MessageConnection!
-    message(id: ID!): Message!
+    songs(cursor: String, limit: Int): SongConnection!
+    song(id: ID!): Song!
   }
   extend type Mutation {
-    createMessage(text: String!): Message!
-    deleteMessage(id: ID!): Boolean!
+    createSong(url: String!): Song!
+    deleteSong(id: ID!): Boolean!
   }
-  type MessageConnection {
-    edges: [Message!]!
+  type SongConnection {
+    edges: [Song!]!
     pageInfo: PageInfo!
   }
   type PageInfo {
     hasNextPage: Boolean!
     endCursor: Date!
   }
-  type Message {
+  type Song {
     id: ID!
-    text: String!
+    url: String!
     createdAt: Date!
     user: User!
   }
